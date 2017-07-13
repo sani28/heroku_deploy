@@ -1,4 +1,14 @@
 <h1><%= @question.title %></h1>
 <p><%= @question.body %></p>
 
+
+<p> <strong> Author: </strong> <%= @question.user&full_name %> </p>
+
+
 <%= link_to 'Edit', edit_question_path(@question) %>
+<%= link_to 'Delete',
+      question_path(@question),
+      method: :delete
+      #under the hood, rails uses javascript to make a request with the verb Delete
+
+      %>

@@ -30,8 +30,13 @@ In this case, the url for the `create` action to `questions` which is the
   </div>
 
   <div>
-    <%= f.label :body %>
-    <%= f.text_area :body %>
+    <%= f.label :descrpition %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
+    <%= f.label :price %>
+    <%= f.text_field :price %>
   </div>
 
   <%= f.submit %>

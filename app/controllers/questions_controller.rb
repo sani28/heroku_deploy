@@ -1,8 +1,15 @@
 class QuestionsController < ApplicationController
+ before_action :authenticate_user!, except: [:index, :show]
   # The New action is usually used to show a form of
   # the resource we'll create on submission
   # URL: /questions/new
   # VERB: GET
+
+  def index
+    @questions = Question.order(created_at: :desc)
+  end
+
+
   def new
     # Instance variables declared in controllers are accessible
     # views rendered by that action.
@@ -14,9 +21,28 @@ class QuestionsController < ApplicationController
     @question = Question.find params[:id]
   end
 
+  def update
+      @question = Question.find params[:id]
+      question_params = params.require(:question).permit(:title, :body)
+
+      if @question.update question_params
+        redirect_to question_path(@question)
+      else
+        render :edit
+      end
+    end
+
+  def destroy
+      @question = Question.find params[:id]
+      @question.destroy
+      redirect_to questions_path
+  end
+
   def show
     @question = Question.find params[:id]
   end
+
+
 
   # The Create action is used to handle form submissions from the New
   # action to create a record (of a question in this case) in the database.
@@ -41,6 +67,7 @@ class QuestionsController < ApplicationController
     # otherwise rails will throw an error. This is to prevent users
     # from creating their fields
     @question = Question.new question_params
+    @question.user = current_user
 
     if @question.save
       # redirect_to question_path(id: @question.id)

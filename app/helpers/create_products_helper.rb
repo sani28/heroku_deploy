@@ -1,0 +1,2 @@
+module CreateProductsHelper
+end
