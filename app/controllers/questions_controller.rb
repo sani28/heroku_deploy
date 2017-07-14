@@ -1,9 +1,11 @@
 class QuestionsController < ApplicationController
- before_action :authenticate_user!, except: [:index, :show]
+ # before_action :authenticate_user!, except: [:index, :show]
   # The New action is usually used to show a form of
   # the resource we'll create on submission
   # URL: /questions/new
   # VERB: GET
+
+  before_action :authorize_user!, only: [:edit, :destroy, :update]
 
   def index
     @questions = Question.order(created_at: :desc)
@@ -19,6 +21,8 @@ class QuestionsController < ApplicationController
 
   def edit
     @question = Question.find params[:id]
+    if @question.user != current_user
+      redirect_to root_path, alert: 'Access denied'
   end
 
   def update
@@ -41,6 +45,7 @@ class QuestionsController < ApplicationController
   def show
     @question = Question.find params[:id]
   end
+
 
 
 
@@ -80,6 +85,32 @@ class QuestionsController < ApplicationController
       render :new
     end
   end
+
+
+
+  #remember that if a `before_action` does `render`, `redirect_to` or `head`
+  #it will stop the request from getting into the action
+
+
+  def authorize_user!
+    # @question = Question.find params[:id]
+    # head :unauthorized unless can?(:manage, @question)
+
+    unless can?(:manage, @question)
+      # redirect_to root_path, alert: 'Access denied'
+
+      #head will send an empty http response, it will take one argument as a string
+      #and the argument will tell Rails to send the desired HTTP response code
+      # :unauthorized -> 401
+      # you can see more code on this page:
+      #http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/
+      head :unauthorized
+  end
+end
+
+
+end
+
 end
 
 

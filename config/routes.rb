@@ -6,10 +6,25 @@ Rails.application.routes.draw do
   #not create any routes that requires id. Instead, it expects that
   #it will always be working with the same resource.
 
+
+#the `namespace` feature of Rails routes will add the name space as section
+# of the URL so in this case all routes defined within this `admin` namespace
+# will be prepended with `/admin`so the url index for `dashbaord` will be:
+# /admin/dashboard
+#also note that the resources for controllers defined within the namespace
+#will be expected to be in a folder with the same name as `namespace`
+#which is `admin` in this case. so the dashboard_controller must be located in
+# a subfolder called `admin` within `/app/controllers`
+
+
+  namespace :admin do
+    resources :dashboard, only: :index
+  end
+
   #another example of a single resource is a user profile  : resource: profile -
 
   #even though resource is singular, and we gave an argument (ie session) that is singular,
-  # it still expects the controller to be named in plural 
+  # it still expects the controller to be named in plural
 
   resource :sessions, only: [:new, :create, :destroy]
 
@@ -44,7 +59,14 @@ Rails.application.routes.draw do
   # that is defined within the controller.
   # as: :home will generate a URL helper that will gives a view helper method
   # to auto-generate the URL
-  get('/', { to: 'welcome#index', as: :home })
+
+
+  root 'welcome#index' # this will give you a helper method `root_path` that
+                        # will take you to the home page which is welcome/index
+                        # in our case
+
+
+  # get('/', { to: 'welcome#index', as: :home })
 
   get('/contact', { to: 'contact#new' })
   # get '/contact', { to: 'contact#new' }

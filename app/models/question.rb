@@ -4,6 +4,9 @@ class Question < ApplicationRecord
   # happening if the validation rules are not met.
   # we can call `.save` we will get back `true` if it completes successfully and
   # will get back `false` if validations fail
+
+has_many :answers, dependent: :destroy 
+
   validates(:title, { presence: { message: 'must be provided' },
                       uniqueness: true
                     })
